@@ -41,7 +41,14 @@ where population >= 500000;
 select * from city
 order by Population desc limit 5;
 
+select * from(select name, Population from city order by 2 desc) as sub
+limit 5;
+
 # 10. 세계에서 특정 언어가 해당 지역에서 5% 미만으로 사용되고 있지만 공식적인 언어로 지정된 경우는?
+select count(*) from countrylanguage
+where Percentage < 5 and IsOfficial like "T"
+order by Percentage desc;
+
 # 그리고 사용비율을 기준으로 내림정렬했을 때 상위 10개를 출력하기
 select * from countrylanguage
 where Percentage < 5 and IsOfficial like "T"
@@ -49,21 +56,21 @@ order by Percentage desc limit 10;
 
 # 11. 우리나라 도시 정보를 아래의 요구사항에 맞게 출력하세요
 # 1) 지역명을 기준으로 오름차순, 인구수를 기준으로 내림차순 출력하기(출력되는 레코드의 번호도 함께 출력하기)
-select row_number() over (order by name asc) as 인덱스,
+select row_number() over (order by District, Population desc) as 인덱스,
 name as 도시명,
 District as 지역명,
 population as 인구수
 from city
 where CountryCode like 'KOR'
-order by name asc, Population desc;
+order by District, Population desc;
 
 # 2) 1)에서 출력되는 내용을 바탕으로 출력 순서 23번째부터 10개를 출력하세요(출력되는 레코드의 번호도 함께 출력하기)
-select row_number() over (order by name asc) as 인덱스,
+select row_number() over (order by District, Population desc) as 인덱스,
 name as 도시명,
 District as 지역명,
 population as 인구수
 from city
 where CountryCode like 'KOR'
-order by name, Population desc
+order by District, Population desc
 -- limit 10 offset 22; # limit, offset 키워드로 몇 번째부터 몇 개를 출력할 지 정할 수 있음
 limit 22, 10;
